@@ -1,12 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject MotorCategoryPanel;
     public GameObject _MianBoard;
+    public GameObject _MainCanvas;
+    public GameObject _ScoreCanvas;
+    public Text _ScoreText;
+    public int Score = 0;
     private static GameManager _instance;
     public enum BlockType
     {
@@ -41,13 +46,49 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+    }  
+    ///////////////////////////////////////////////PLAYer Settings
+    public void ImportDataFromManager()
+    {
+        if (BlockSequentialType == null||BlockSequentialValue==null)
+        {
+            print("Fuck");
+            PlayerManager.Instance.ResetCurrentType();
+
+            return;
+        }
+        PlayerManager.Instance._CurrentValue = BlockSequentialValue.Dequeue();
+        switch (BlockSequentialType.Dequeue())
+        {
+            case BlockType.Forward:
+                {
+                    PlayerManager.Instance.SetCurentToForward();
+                    break;
+                }
+            case BlockType.TurnLeft:
+                {
+
+                    PlayerManager.Instance.SetCurentToTurnLeft();
+
+                    break;
+                }
+            case BlockType.TurnRight:
+                {
+
+                    PlayerManager.Instance.SetCurentToTurnRigh();
+                    break;
+                }
+        }
     }
     ///////////////////////////////////////////////PLAY Button
     public void BtnPlay()
     {
         print(_MianBoard.transform.childCount);
+        _MainCanvas.SetActive(false);
+        _ScoreCanvas.SetActive(true);
         GetBlockFromUI();
+        PlayerManager.Instance.SetPlaying(true);
+        PlayerManager.Instance.SetCurrentBlockType();
        
     }  
 
@@ -55,6 +96,8 @@ public class GameManager : MonoBehaviour
     {
 
     }
+    ///////////////////////////////////////////////UI Interaction
+
     public void GetBlockFromUI()
     {
         for (int i = 0; i < _MianBoard.transform.childCount; i++)
@@ -65,18 +108,33 @@ public class GameManager : MonoBehaviour
             if (val != "") {
                  value = int.Parse(val);
             }
-          // BlockType typpe = _MianBoard.GetComponent<TypeOfBlock>().blocktype;
-          //  BlockSequentialType.Enqueue(typpe);
+            // BlockType typpe = _MianBoard.GetComponent<TypeOfBlock>().blocktype;
+            //  BlockSequentialType.Enqueue(typpe);
+            switch (_MianBoard.transform.GetChild(i).tag)
+            {
+                case "Forward":
+                    {
+                     
+                        BlockSequentialType.Enqueue(BlockType.Forward);
+                        break;
+                    }
+                case "TurnRight":
+                    {
+                        BlockSequentialType.Enqueue(BlockType.TurnRight);
+
+                        break;
+                    }
+                case "TurnLeft":
+                    {
+                        BlockSequentialType.Enqueue(BlockType.TurnLeft);
+
+                        break;
+                    }
+            }
             BlockSequentialValue.Enqueue(value);
         }
 
-        for (int i = 0; i < BlockSequentialType.Count; i++)
-        {
-          //  print(BlockSequentialType.Dequeue());
-            print(BlockSequentialValue.Dequeue());
-
-        }
-
+      
     }
 
     ///////////////////////////////////////////////UI
@@ -120,5 +178,24 @@ public class GameManager : MonoBehaviour
     {
         _MianBoard.SetActive(true);
     }
-  
+    public bool IsBlocksEmpty()
+    {
+        if (BlockSequentialType.Count < 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public void IncrementScore()
+    {
+        Score++;
+        _ScoreText.text = "Score : " + Score;
+    }
+  public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
