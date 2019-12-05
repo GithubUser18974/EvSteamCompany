@@ -53,7 +53,7 @@ public class PlayerManager : MonoBehaviour
             {
                 case BlockTypes.Forward:
                     {
-                        Forward(_CurrentValue+(int)srcPosition.z);
+                        Forward(_CurrentValue);//+(int)srcPosition.z
                         break;
                     }
                 case BlockTypes.TurnLeft:
@@ -72,17 +72,19 @@ public class PlayerManager : MonoBehaviour
     public void Forward(int steps)
     {
         print("Forward");
-        dstPosition.z = steps;
+//        dstPosition.z = steps;
         _PlayerRigidBody.velocity = transform.forward * 25*Time.deltaTime;
        // this.transform.localPosition = Vector3.MoveTowards(transform.position, dstPosition,0.02f);
        // this.transform.position = Vector3.Lerp(srcPosition, dstPosition, t);
        //    t += Time.deltaTime * 0.3f; // will do the lerp over two seconds
 
-        if (transform.position.z >=  steps)
+        if (Mathf.Abs(Mathf.Abs( transform.position.z)- Mathf.Abs(srcPosition.z) )>=  steps  ||  Mathf.Abs( Mathf.Abs(transform.position.x)- Mathf.Abs(srcPosition.x))>=steps)
         {
+            print("ZZZ   " + Mathf.Abs(Mathf.Abs(transform.position.z) - Mathf.Abs(srcPosition.z)));
+            print("XXX   " + Mathf.Abs(Mathf.Abs(transform.position.x) - Mathf.Abs(srcPosition.x)));
             _PlayerRigidBody.velocity = Vector3.zero;
             srcPosition = transform.position;
-             SetCurrentBlockType();
+            SetCurrentBlockType();
             t = 0;
         }
 
@@ -90,8 +92,13 @@ public class PlayerManager : MonoBehaviour
     public void TurnRight(int angle)
     {
         print("Right");
-        transform.eulerAngles=new Vector3(transform.localRotation.x,angle, transform.localRotation.z);
-        SetCurrentBlockType();
+
+        transform.localRotation = Quaternion.RotateTowards(transform.rotation,
+       Quaternion.Euler(transform.rotation.x, transform.rotation.y - angle, transform.rotation.z), 10 * Time.deltaTime);
+        if (Mathf.Abs(this.transform.eulerAngles.y) >= Mathf.Abs((Mathf.Abs(transform.rotation.y )- angle)))
+        {
+            SetCurrentBlockType();
+        }
 
     }
     public void TurnLeft(int angle)
@@ -139,6 +146,9 @@ public class PlayerManager : MonoBehaviour
             ResetCurrentType();
             return;
         }
-        GameManager.Instance.ImportDataFromManager();
+        else
+        {
+            GameManager.Instance.ImportDataFromManager();
+        }
     }
 }

@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject _ScoreCanvas;
     public Text _ScoreText;
     public int Score = 0;
+    bool isEmpty = true;
     private static GameManager _instance;
     public enum BlockType
     {
@@ -180,7 +181,7 @@ public class GameManager : MonoBehaviour
     }
     public bool IsBlocksEmpty()
     {
-        if (BlockSequentialType.Count < 0)
+        if (BlockSequentialType.Count==0)
         {
             return true;
         }
