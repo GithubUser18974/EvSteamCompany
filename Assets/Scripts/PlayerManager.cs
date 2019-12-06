@@ -12,6 +12,8 @@ public class PlayerManager : MonoBehaviour
     public int _CurrentValue = 0;
     public bool isPlaying = false;
     Rigidbody _PlayerRigidBody;
+    public float movementPower = 30f;
+    public float rotationPower = 10f;
     /// <summary>
     /// ///////////////////////////////////
     /// </summary>
@@ -73,7 +75,7 @@ public class PlayerManager : MonoBehaviour
     {
         print("Forward");
 //        dstPosition.z = steps;
-        _PlayerRigidBody.velocity = transform.forward * 25*Time.deltaTime;
+        _PlayerRigidBody.velocity = transform.forward * movementPower*Time.deltaTime;
        // this.transform.localPosition = Vector3.MoveTowards(transform.position, dstPosition,0.02f);
        // this.transform.position = Vector3.Lerp(srcPosition, dstPosition, t);
        //    t += Time.deltaTime * 0.3f; // will do the lerp over two seconds
@@ -94,8 +96,8 @@ public class PlayerManager : MonoBehaviour
         print("Right");
 
         transform.localRotation = Quaternion.RotateTowards(transform.rotation,
-       Quaternion.Euler(transform.rotation.x, transform.rotation.y - angle, transform.rotation.z), 10 * Time.deltaTime);
-        if (Mathf.Abs(this.transform.eulerAngles.y) >= Mathf.Abs((Mathf.Abs(transform.rotation.y )- angle)))
+       Quaternion.Euler(transform.rotation.x, transform.rotation.y - angle, transform.rotation.z), rotationPower * Time.deltaTime);
+        if (Mathf.Abs(this.transform.eulerAngles.y) <= Mathf.Abs((Mathf.Abs(transform.rotation.y )- angle)))
         {
             SetCurrentBlockType();
         }
@@ -108,7 +110,7 @@ public class PlayerManager : MonoBehaviour
 
 
         transform.localRotation = Quaternion.RotateTowards(transform.rotation,
-       Quaternion.Euler(transform.rotation.x, transform.rotation.y + angle, transform.rotation.z), 10 * Time.deltaTime);
+       Quaternion.Euler(transform.rotation.x, transform.rotation.y + angle, transform.rotation.z), rotationPower * Time.deltaTime);
         if (this.transform.eulerAngles.y >= transform.rotation.y + angle)
         {
             SetCurrentBlockType();
