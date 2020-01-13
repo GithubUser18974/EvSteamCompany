@@ -14,6 +14,7 @@ public class PlayerManager : MonoBehaviour
     Rigidbody _PlayerRigidBody;
     public float movementPower = 30f;
     public float rotationPower = 10f;
+
     /// <summary>
     /// ///////////////////////////////////
     /// </summary>
@@ -34,7 +35,8 @@ public class PlayerManager : MonoBehaviour
         None,
         Forward,
         TurnLeft,
-        TurnRight
+        TurnRight,
+        AbsoluteForward,
     }
 
    public BlockTypes _CurrentBlockType=BlockTypes.None;
@@ -68,6 +70,11 @@ public class PlayerManager : MonoBehaviour
                         TurnRight(_CurrentValue);
                         break;
                     }
+                case BlockTypes.AbsoluteForward:
+                    {
+                        AbsoluteForward();
+                        break;
+                    }
             }
         }
     }
@@ -91,13 +98,19 @@ public class PlayerManager : MonoBehaviour
         }
 
     }
+
+    public void AbsoluteForward()
+    {
+        _PlayerRigidBody.velocity = transform.forward * movementPower * Time.deltaTime;
+       // SetCurrentBlockType();
+    }
+
     public void TurnRight(int angle)
     {
         print("Right");
-
         transform.localRotation = Quaternion.RotateTowards(transform.rotation,
-       Quaternion.Euler(transform.rotation.x, transform.rotation.y - angle, transform.rotation.z), rotationPower * Time.deltaTime);
-        if (Mathf.Abs(this.transform.eulerAngles.y) <= Mathf.Abs((Mathf.Abs(transform.rotation.y )- angle)))
+       Quaternion.Euler(transform.rotation.x, transform.rotation.y + angle, transform.rotation.z), rotationPower * Time.deltaTime);
+        if (Mathf.Abs(this.transform.eulerAngles.y) >= Mathf.Abs((Mathf.Abs(transform.rotation.y )+ angle)))
         {
             SetCurrentBlockType();
         }
@@ -107,11 +120,9 @@ public class PlayerManager : MonoBehaviour
     {
         print("Left");
        // transform.eulerAngles = new Vector3(transform.localRotation.x, -angle, transform.localRotation.z);
-
-
         transform.localRotation = Quaternion.RotateTowards(transform.rotation,
-       Quaternion.Euler(transform.rotation.x, transform.rotation.y + angle, transform.rotation.z), rotationPower * Time.deltaTime);
-        if (this.transform.eulerAngles.y >= transform.rotation.y + angle)
+       Quaternion.Euler(transform.rotation.x, transform.rotation.y - angle, transform.rotation.z), rotationPower * Time.deltaTime);
+        if (this.transform.eulerAngles.y <= transform.rotation.y - angle)
         {
             SetCurrentBlockType();
         }
@@ -130,6 +141,10 @@ public class PlayerManager : MonoBehaviour
     public void SetCurentToTurnRigh()
     {
         _CurrentBlockType = BlockTypes.TurnRight ;
+    }
+    public void SetCurentToAbsoluteForward()
+    {
+        _CurrentBlockType = BlockTypes.AbsoluteForward;
     }
     public void SetPlaying(bool what)
     {

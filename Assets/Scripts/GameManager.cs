@@ -18,7 +18,8 @@ public class GameManager : MonoBehaviour
     {
         Forward,
         TurnLeft,
-        TurnRight
+        TurnRight,
+        AbsoluteForward,
     }
     public static GameManager Instance { get { return _instance; } }
     public Queue<BlockType>BlockSequentialType;
@@ -58,7 +59,10 @@ public class GameManager : MonoBehaviour
 
             return;
         }
-        PlayerManager.Instance._CurrentValue = BlockSequentialValue.Dequeue();
+        if (BlockSequentialValue.Count > 0)
+        {
+            PlayerManager.Instance._CurrentValue = BlockSequentialValue.Dequeue();
+        }
         switch (BlockSequentialType.Dequeue())
         {
             case BlockType.Forward:
@@ -77,6 +81,12 @@ public class GameManager : MonoBehaviour
                 {
 
                     PlayerManager.Instance.SetCurentToTurnRigh();
+                    break;
+                }
+            case BlockType.AbsoluteForward:
+                {
+
+                    PlayerManager.Instance.SetCurentToAbsoluteForward();
                     break;
                 }
         }
@@ -103,12 +113,19 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < _MianBoard.transform.childCount; i++)
         {
-            string val = _MianBoard.transform.GetChild(i).GetComponentInChildren<InputField>().text;
-            print(val);
-            int value = 0;
-            if (val != "") {
-                 value = int.Parse(val);
+            if (_MianBoard.transform.GetChild(i).GetComponentInChildren<InputField>() != null)
+            {
+                string val = _MianBoard.transform.GetChild(i).GetComponentInChildren<InputField>().text;
+                print(val);
+                int value = 0;
+                if (val != "")
+                {
+                    value = int.Parse(val);
+                }
+                BlockSequentialValue.Enqueue(value);
+
             }
+
             // BlockType typpe = _MianBoard.GetComponent<TypeOfBlock>().blocktype;
             //  BlockSequentialType.Enqueue(typpe);
             switch (_MianBoard.transform.GetChild(i).tag)
@@ -131,8 +148,12 @@ public class GameManager : MonoBehaviour
 
                         break;
                     }
+                case "AbsoluteForward":
+                    {
+                        BlockSequentialType.Enqueue(BlockType.AbsoluteForward);
+                        break;
+                    }
             }
-            BlockSequentialValue.Enqueue(value);
         }
 
       

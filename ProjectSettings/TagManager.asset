@@ -8,6 +8,7 @@ TagManager:
   - Forward
   - TurnLeft
   - TurnRight
+  - AbsoluteForward
   layers:
   - Default
   - TransparentFX

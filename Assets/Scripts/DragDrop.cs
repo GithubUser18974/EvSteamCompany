@@ -11,7 +11,7 @@ public class DragDrop : MonoBehaviour,IDragHandler,IBeginDragHandler,IEndDragHan
     public GameObject placeHolder=null;
     public void OnBeginDrag(PointerEventData eventData)
     {
-        print("BeginDrag");
+
         GameManager.Instance.HideMotorCategoryCanvas();
         GameManager.Instance.ActivateMainBoard();
         GameManager.Instance.ActivateMainBoardBlockRayCaster();
@@ -35,7 +35,6 @@ public class DragDrop : MonoBehaviour,IDragHandler,IBeginDragHandler,IEndDragHan
 
     public void OnDrag(PointerEventData eventData)
     {
-        print("Drag");
         this.transform.position = eventData.position;
         if(placeHolder.transform.parent != placeHolderParent)
         {
@@ -59,7 +58,6 @@ public class DragDrop : MonoBehaviour,IDragHandler,IBeginDragHandler,IEndDragHan
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        print("EndDrag");
         this.transform.SetParent(parentToReturnTo);
         this.transform.SetSiblingIndex(placeHolder.transform.GetSiblingIndex());
         GetComponent<CanvasGroup>().blocksRaycasts = true;
