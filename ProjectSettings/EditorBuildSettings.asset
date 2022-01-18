@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Main.unity
+    path: Assets/Zootobia/_Scenes/Main.unity
     guid: 875674dcc61cabf47bdbc934149716e3
   m_configObjects: {}
